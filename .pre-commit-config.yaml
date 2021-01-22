@@ -29,3 +29,10 @@ repos:
     rev: 1.7.0
     hooks:
       - id: bandit
+  - repo: local
+    hooks:
+      - id: unittest
+        name: unittest
+        entry: python -m unittest discover
+        language: python
+        pass_filenames: false
