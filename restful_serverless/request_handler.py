@@ -1,3 +1,3 @@
 class RequestHandler:
-    def add_route():
+    def add_route(url, handler):
         ...

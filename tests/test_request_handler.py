@@ -18,3 +18,7 @@ class TestRequestHandler(TestCase):
             True,
             "RequestHandler has no add_route attribute",
         )
+
+    def test_add_route_receives_two_parameters(self):
+        add_route = RequestHandler().add_route
+        self.assertEqual(add_route.__code__.co_argcount, 2)
