@@ -94,7 +94,7 @@ class TestRequestHandler(TestCase):
         rh = RequestHandler()
         with self.assertRaisesRegex(
             ValueError,
-            "add_route: Invalid argument for url parameter, " "must be string",
+            "add_route: Invalid argument for url parameter, must be string",
         ):
             rh.add_route(None, None)
         with self.assertRaisesRegex(
