@@ -1,3 +1,9 @@
 class RequestHandler:
-    def add_route(url, handler):
+    def __init__(self):
+        self._route_prefix = ""
+
+    def add_route(self, url, handler):
         ...
+
+    def route_prefix(self, prefix):
+        self._route_prefix = prefix
