@@ -74,3 +74,8 @@ class TestRequestHandler(TestCase):
             "/api",
             "RequestHandler: route_prefix is not setting _route_prefix",
         )
+
+    def test_route_prefix_throws_when_parameter_is_incorrect(self):
+        rh = RequestHandler()
+        with self.assertRaises(ValueError):
+            rh.route_prefix(None)

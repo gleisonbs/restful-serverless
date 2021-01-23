@@ -6,4 +6,8 @@ class RequestHandler:
         ...
 
     def route_prefix(self, prefix):
+        if not isinstance(prefix, str):
+            raise ValueError(
+                "route_prefix(prefix): Invalid argument for prefix parameter"
+            )
         self._route_prefix = prefix
