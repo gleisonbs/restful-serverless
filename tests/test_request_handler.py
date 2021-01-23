@@ -58,7 +58,7 @@ class TestRequestHandler(TestCase):
             "(including self)",
         )
 
-    def test_has__route_prefix_property(self):
+    def test_has__route_prefix_str_property(self):
         rh = RequestHandler()
         self.assertEqual(
             rh._route_prefix,
@@ -77,5 +77,37 @@ class TestRequestHandler(TestCase):
 
     def test_route_prefix_throws_when_parameter_is_incorrect(self):
         rh = RequestHandler()
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(
+            ValueError,
+            "route_prefix Invalid argument for prefix parameter, "
+            "must be string",
+        ):
             rh.route_prefix(None)
+        with self.assertRaisesRegex(
+            ValueError,
+            "route_prefix Invalid argument for prefix parameter, "
+            "must be string",
+        ):
+            rh.route_prefix(4321)
+
+    def test_add_route_throws_when_parameter_are_incorrect(self):
+        rh = RequestHandler()
+        with self.assertRaisesRegex(
+            ValueError,
+            "add_route: Invalid argument for url parameter, " "must be string",
+        ):
+            rh.add_route(None, None)
+        with self.assertRaisesRegex(
+            ValueError,
+            "add_route: Invalid argument for route_handler parameter, "
+            "must be Endpoint",
+        ):
+            rh.add_route("", None)
+
+    def test_has__endpoints_dict_property(self):
+        rh = RequestHandler()
+        self.assertEqual(
+            rh._endpoints,
+            {},
+            "RequestHandler: _endpoints should be and empty dictionary",
+        )
