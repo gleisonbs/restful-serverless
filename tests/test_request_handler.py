@@ -1,7 +1,19 @@
 from unittest import TestCase
 
 from restful_serverless import request_handler
+from restful_serverless.endpoint import Endpoint
 from restful_serverless.request_handler import RequestHandler
+
+
+def make_endpoint():
+    class TestEndpoint(Endpoint):
+        ...
+
+    return TestEndpoint()
+
+
+def make_sut():
+    return RequestHandler()
 
 
 class TestRequestHandler(TestCase):
@@ -19,7 +31,7 @@ class TestRequestHandler(TestCase):
             "RequestHandler has no add_route attribute",
         )
 
-        add_route = RequestHandler().add_route
+        add_route = make_sut().add_route
         self.assertEqual(
             hasattr(add_route, "__call__"),
             True,
@@ -27,7 +39,7 @@ class TestRequestHandler(TestCase):
         )
 
     def test_add_route_receives_two_parameters(self):
-        add_route = RequestHandler().add_route
+        add_route = make_sut().add_route
         self.assertEqual(
             add_route.__code__.co_argcount,
             2 + 1,
@@ -42,7 +54,7 @@ class TestRequestHandler(TestCase):
             "RequestHandler has no route_prefix attribute",
         )
 
-        route_prefix = RequestHandler().route_prefix
+        route_prefix = make_sut().route_prefix
         self.assertEqual(
             hasattr(route_prefix, "__call__"),
             True,
@@ -50,7 +62,7 @@ class TestRequestHandler(TestCase):
         )
 
     def test_route_prefix_receives_two_parameters(self):
-        route_prefix = RequestHandler().route_prefix
+        route_prefix = make_sut().route_prefix
         self.assertEqual(
             route_prefix.__code__.co_argcount,
             1 + 1,
@@ -59,7 +71,7 @@ class TestRequestHandler(TestCase):
         )
 
     def test_has__route_prefix_str_property(self):
-        rh = RequestHandler()
+        rh = make_sut()
         self.assertEqual(
             rh._route_prefix,
             "",
@@ -67,7 +79,7 @@ class TestRequestHandler(TestCase):
         )
 
     def test_route_prefix_method_sets__route_prefix_property(self):
-        rh = RequestHandler()
+        rh = make_sut()
         rh.route_prefix("/api")
         self.assertEqual(
             rh._route_prefix,
@@ -75,8 +87,8 @@ class TestRequestHandler(TestCase):
             "RequestHandler: route_prefix is not setting _route_prefix",
         )
 
-    def test_route_prefix_throws_when_parameter_is_incorrect(self):
-        rh = RequestHandler()
+    def test_route_prefix_raises_when_parameter_is_incorrect(self):
+        rh = make_sut()
         with self.assertRaisesRegex(
             ValueError,
             "route_prefix Invalid argument for prefix parameter, "
@@ -90,11 +102,11 @@ class TestRequestHandler(TestCase):
         ):
             rh.route_prefix(4321)
 
-    def test_add_route_throws_when_parameter_are_incorrect(self):
-        rh = RequestHandler()
+    def test_add_route_raises_when_parameter_are_incorrect(self):
+        rh = make_sut()
         with self.assertRaisesRegex(
             ValueError,
-            "add_route: Invalid argument for url parameter, must be string",
+            "add_route: Invalid argument for route parameter, must be string",
         ):
             rh.add_route(None, None)
         with self.assertRaisesRegex(
@@ -105,9 +117,18 @@ class TestRequestHandler(TestCase):
             rh.add_route("", None)
 
     def test_has__endpoints_dict_property(self):
-        rh = RequestHandler()
+        rh = make_sut()
         self.assertEqual(
             rh._endpoints,
             {},
             "RequestHandler: _endpoints should be and empty dictionary",
         )
+
+    def test_add_route_creates_correct_entry_in_endpoint_dict(self):
+        rh = make_sut()
+        test_endpoint = make_endpoint()
+
+        self.assertEqual(len(rh._endpoints), 0)
+        rh.add_route("/", test_endpoint)
+        self.assertEqual(len(rh._endpoints), 1)
+        self.assertEqual(rh._endpoints["/"], test_endpoint)
