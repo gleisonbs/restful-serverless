@@ -132,3 +132,12 @@ class TestRequestHandler(TestCase):
         rh.add_route("/", test_endpoint)
         self.assertEqual(len(rh._endpoints), 1)
         self.assertEqual(rh._endpoints["/"], test_endpoint)
+
+    def test_add_route_raises_when_route_already_in_endpoints(self):
+        rh = make_sut()
+        rh.add_route("/", make_endpoint())
+        with self.assertRaisesRegex(
+            ValueError,
+            "add_route: route already added",
+        ):
+            rh.add_route("/", make_endpoint())

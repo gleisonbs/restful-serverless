@@ -25,6 +25,9 @@ class RequestHandler:
                 "must be Endpoint"
             )
 
+        if route in self._endpoints:
+            raise ValueError("add_route: route already added")
+
         self._endpoints[route] = route_handler
 
     def route_prefix(self, prefix):
