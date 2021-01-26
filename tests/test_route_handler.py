@@ -23,3 +23,17 @@ class TestRouteHandler(TestCase):
             True,
             "route_handler: no RouteHandler attribute found",
         )
+
+    def test_route_handler_has_callable_add(self):
+        self.assertEqual(
+            hasattr(RouteHandler, "add"),
+            True,
+            "RouteHandler: no add attribute found",
+        )
+
+        add = make_sut().add
+        self.assertEqual(
+            hasattr(add, "__call__"),
+            True,
+            "RequestHandler: add is not callable",
+        )
