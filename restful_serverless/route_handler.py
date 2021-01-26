@@ -2,5 +2,5 @@ class RouteHandler:
     def add(self, route, handler):
         ...
 
-    def prefix(self):
+    def prefix(self, _prefix):
         ...

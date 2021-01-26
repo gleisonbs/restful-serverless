@@ -60,3 +60,12 @@ class TestRouteHandler(TestCase):
             True,
             "RouteHandler: prefix is not callable",
         )
+
+    def test_prefix_receives_one_parameter(self):
+        prefix = make_sut().prefix
+        self.assertEqual(
+            prefix.__code__.co_argcount,
+            1 + 1,
+            "RouteHandler: prefix should accept two parameters"
+            "(including self)",
+        )
