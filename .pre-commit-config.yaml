@@ -37,4 +37,4 @@ repos:
         entry: python -m unittest discover
         language: python
         pass_filenames: false
-        additional_dependencies: ['werkzeug']
+        additional_dependencies: ['werkzeug', 'mock']
