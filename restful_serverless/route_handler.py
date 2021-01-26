@@ -1,3 +1,3 @@
 class RouteHandler:
-    def add(self):
+    def add(self, route, handler):
         ...

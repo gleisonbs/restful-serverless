@@ -35,5 +35,14 @@ class TestRouteHandler(TestCase):
         self.assertEqual(
             hasattr(add, "__call__"),
             True,
-            "RequestHandler: add is not callable",
+            "RouteHandler: add is not callable",
+        )
+
+    def test_add_receives_two_parameters(self):
+        add = make_sut().add
+        self.assertEqual(
+            add.__code__.co_argcount,
+            2 + 1,
+            "RouteHandler: add should accept three parameters"
+            "(including self)",
         )
