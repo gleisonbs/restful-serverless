@@ -141,3 +141,12 @@ class TestRequestHandler(TestCase):
             "add_route: route already added",
         ):
             rh.add_route("/", make_endpoint())
+
+    def test_add_route_adds_with_prefix(self):
+        rh = make_sut()
+        rh.add_route("/", make_endpoint())
+        self.assertIn("/", rh._endpoints.keys())
+
+        rh.route_prefix("/api")
+        rh.add_route("/users", make_endpoint())
+        self.assertIn("/api/users", rh._endpoints.keys())

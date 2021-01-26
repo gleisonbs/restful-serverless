@@ -1,3 +1,5 @@
+from os import path
+
 from restful_serverless.endpoint import Endpoint
 
 
@@ -28,7 +30,10 @@ class RequestHandler:
         if route in self._endpoints:
             raise ValueError("add_route: route already added")
 
-        self._endpoints[route] = route_handler
+        if self._route_prefix and route.startswith("/"):
+            route = route[1:]
+        route_with_prefix = path.join(self._route_prefix, route)
+        self._endpoints[route_with_prefix] = route_handler
 
     def route_prefix(self, prefix):
         if not isinstance(prefix, str):
