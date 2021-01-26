@@ -46,3 +46,10 @@ class TestRouteHandler(TestCase):
             "RouteHandler: add should accept three parameters"
             "(including self)",
         )
+
+    def test_route_handler_has_callable_prefix(self):
+        self.assertEqual(
+            hasattr(RouteHandler, "prefix"),
+            True,
+            "RouteHandler: no prefix attribute found",
+        )
