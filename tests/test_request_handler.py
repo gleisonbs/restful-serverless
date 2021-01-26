@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from werkzeug.routing import Map
+
 from restful_serverless import request_handler
 from restful_serverless.endpoint import Endpoint
 from restful_serverless.request_handler import RequestHandler
@@ -122,6 +124,22 @@ class TestRequestHandler(TestCase):
             rh._endpoints,
             {},
             "RequestHandler: _endpoints should be and empty dictionary",
+        )
+
+    def test_has__rules_Map_property(self):
+        rh = make_sut()
+        self.assertEqual(
+            hasattr(rh, "_rules"),
+            True,
+            "RequestHandler: has no _rules attribute",
+        )
+
+    def test__rules_is_instance_of_Map(self):
+        rh = make_sut()
+        self.assertIsInstance(
+            rh._rules,
+            Map,
+            "RequestHandler: _rules is not a werkzeug Map",
         )
 
     def test_add_route_creates_correct_entry_in_endpoint_dict(self):

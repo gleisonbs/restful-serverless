@@ -1,5 +1,7 @@
 from os import path
 
+from werkzeug.routing import Map
+
 from restful_serverless.endpoint import Endpoint
 
 
@@ -7,6 +9,7 @@ class RequestHandler:
     def __init__(self):
         self._route_prefix = ""
         self._endpoints = {}
+        self._rules = Map()
 
     def add_route(self, route, route_handler):
         """Add a new route and a route handler.
