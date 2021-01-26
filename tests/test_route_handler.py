@@ -53,3 +53,10 @@ class TestRouteHandler(TestCase):
             True,
             "RouteHandler: no prefix attribute found",
         )
+
+        prefix = make_sut().prefix
+        self.assertEqual(
+            hasattr(prefix, "__call__"),
+            True,
+            "RouteHandler: prefix is not callable",
+        )
