@@ -6,12 +6,12 @@ authors = ["Gleison Batista Soares <gleisonbs@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pre-commit = "^2.9.3"
 Werkzeug = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 unittest = "^0.0"
+pre-commit = "^2.9.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
