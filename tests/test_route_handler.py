@@ -142,6 +142,14 @@ class TestRouteHandler(TestCase):
         self.assertEqual(len(rh._endpoints), 1)
         self.assertEqual(rh._endpoints["/"], test_endpoint)
 
+    def test_add_creates_correct_entry_in_rules(self):
+        rh = make_sut()
+        test_endpoint = make_endpoint()
+
+        self.assertEqual(len(rh._rules._rules), 0)
+        rh.add("/", test_endpoint)
+        self.assertEqual(len(rh._rules._rules), 1)
+
     def test_add_route_adds_with_prefix(self):
         rh = make_sut()
         rh.add("/", make_endpoint())

@@ -1,6 +1,6 @@
 from os import path
 
-from werkzeug.routing import Map
+from werkzeug.routing import Map, Rule
 
 
 class RouteHandler:
@@ -15,6 +15,7 @@ class RouteHandler:
 
         route_with_prefix = path.join(self._prefix, route)
         self._endpoints[route_with_prefix] = handler
+        self._rules.add(Rule(route_with_prefix, endpoint=route_with_prefix))
 
     def prefix(self, _prefix):
         self._prefix = _prefix
