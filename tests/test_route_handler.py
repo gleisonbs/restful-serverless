@@ -66,6 +66,14 @@ class TestRouteHandler(TestCase):
             "RouteHandler: _rules is not a werkzeug Map",
         )
 
+    def test_has__urls_Map_property(self):
+        rh = make_sut()
+        self.assertEqual(
+            hasattr(rh, "_urls"),
+            True,
+            "RouteHandler: has no _urls attribute",
+        )
+
     # ROUTE HANDLER CLASS HAS CALLABLES
     def test_route_handler_has_callable_add(self):
         self.assertEqual(
@@ -147,8 +155,9 @@ class TestRouteHandler(TestCase):
         test_endpoint = make_endpoint()
 
         self.assertEqual(len(rh._rules._rules), 0)
-        rh.add("/", test_endpoint)
+        rh.add("/<int:year>", test_endpoint)
         self.assertEqual(len(rh._rules._rules), 1)
+        # import ipdb; ipdb.set_trace()
 
     def test_add_route_adds_with_prefix(self):
         rh = make_sut()
@@ -158,3 +167,13 @@ class TestRouteHandler(TestCase):
         rh.prefix("/api")
         rh.add("/users", make_endpoint())
         self.assertIn("/api/users", rh._endpoints.keys())
+
+    def test_parse_route_correctly_parses_route(self):
+        rh = make_sut()
+        endpoint = make_endpoint()
+        rh.prefix("/api")
+        rh.add("/user/<int:id>", endpoint)
+
+        route, parameters = rh.parse("/api/user/43")
+        self.assertEqual(route, "/api/user/<int:id>")
+        self.assertEqual(parameters, {"id": 43})

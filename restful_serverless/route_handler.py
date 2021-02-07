@@ -8,6 +8,7 @@ class RouteHandler:
         self._prefix = ""
         self._endpoints = {}
         self._rules = Map()
+        self._urls = self._rules.bind("/")
 
     def add(self, route, handler):
         if self._prefix and route.startswith("/"):
@@ -19,3 +20,7 @@ class RouteHandler:
 
     def prefix(self, _prefix):
         self._prefix = _prefix
+
+    def parse(self, route):
+        res = self._urls.match(route)
+        return res
