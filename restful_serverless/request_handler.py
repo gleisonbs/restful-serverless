@@ -51,3 +51,6 @@ class RequestHandler:
             )
 
         self._prefix = prefix
+
+    def handle(self, request):
+        self._route_handler.parse(request.path)

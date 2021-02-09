@@ -15,9 +15,18 @@ def make_endpoint():
     return EndpointStub()
 
 
+def make_request():
+    class RequestStub:
+        def __init__(self):
+            self.path = "/test_route/123"
+
+    return RequestStub()
+
+
 def make_route_handler():
     class RouteHandlerStub(RouteHandler):
-        ...
+        def parse(self, route):
+            ...
 
     return RouteHandlerStub()
 
@@ -80,6 +89,20 @@ class TestRequestHandler(TestCase):
             hasattr(prefix_routes, "__call__"),
             True,
             "RequestHandler: prefix_routes is not callable",
+        )
+
+    def test_request_handler_has_callable_handle(self):
+        self.assertEqual(
+            hasattr(RequestHandler, "handle"),
+            True,
+            "RequestHandler no handle attribute found",
+        )
+
+        handle = make_sut().handle
+        self.assertEqual(
+            hasattr(handle, "__call__"),
+            True,
+            "RequestHandler: handle is not callable",
         )
 
     # CALLABLES ACCEPTS CORRECT NUMBER OF PARAMETERS
@@ -195,3 +218,15 @@ class TestRequestHandler(TestCase):
         rh.add_route("/", test_endpoint)
         self.assertEqual(len(rh._endpoints), 1)
         self.assertEqual(rh._endpoints["/"], test_endpoint)
+
+    def test_handle_calls_parse(self):
+        sut = make_sut()
+        route_handler = sut._route_handler
+
+        request = make_request()
+
+        with patch.object(
+            route_handler, "parse", wraps=route_handler.parse
+        ) as wrapped_parse:
+            sut.handle(request)
+            wrapped_parse.assert_called_with(request.path)
