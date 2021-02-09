@@ -45,6 +45,14 @@ class TestRequestHandler(TestCase):
             "RequestHandler: has no _route_handler attribute",
         )
 
+    def test_has__endpoints_dict_property(self):
+        rh = make_sut()
+        self.assertEqual(
+            rh._endpoints,
+            {},
+            "RequestHandler: _endpoints should be and empty dictionary",
+        )
+
     # REQUEST HANDLER CLASS HAS CALLABLES
     def test_request_handler_has_callable_add_route(self):
         self.assertEqual(
@@ -168,15 +176,22 @@ class TestRequestHandler(TestCase):
             route_handler, "add", wraps=route_handler.add
         ) as wrapped_add:
             sut.add_route(test_route, test_endpoint)
-            wrapped_add.assert_called_with(test_route, test_endpoint)
+            wrapped_add.assert_called_with(test_route)
 
-    def test_prefix_routes_calls_prefix(self):
-        sut = make_sut()
-        route_handler = sut._route_handler
-        test_prefix = "/test_prefix"
+    def test_add_route_adds_with_prefix(self):
+        rh = make_sut()
+        rh.add_route("/", make_endpoint())
+        self.assertIn("/", rh._endpoints.keys())
 
-        with patch.object(
-            route_handler, "prefix", wraps=route_handler.prefix
-        ) as wrapped_prefix:
-            sut.prefix_routes(test_prefix)
-            wrapped_prefix.assert_called_with(test_prefix)
+        rh.prefix_routes("/api")
+        rh.add_route("/users", make_endpoint())
+        self.assertIn("/api/users", rh._endpoints.keys())
+
+    def test_add_creates_correct_entry_in_endpoints(self):
+        rh = make_sut()
+        test_endpoint = make_endpoint()
+
+        self.assertEqual(len(rh._endpoints), 0)
+        rh.add_route("/", test_endpoint)
+        self.assertEqual(len(rh._endpoints), 1)
+        self.assertEqual(rh._endpoints["/"], test_endpoint)

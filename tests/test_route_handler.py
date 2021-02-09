@@ -3,15 +3,7 @@ from unittest import TestCase
 from werkzeug.routing import Map
 
 from restful_serverless import route_handler
-from restful_serverless.endpoint import Endpoint
 from restful_serverless.route_handler import RouteHandler
-
-
-def make_endpoint():
-    class EndpointStub(Endpoint):
-        ...
-
-    return EndpointStub()
 
 
 def make_sut():
@@ -42,14 +34,6 @@ class TestRouteHandler(TestCase):
             rh._prefix,
             "",
             "RouteHandler: _route_prefix should be and empty string",
-        )
-
-    def test_has__endpoints_dict_property(self):
-        rh = make_sut()
-        self.assertEqual(
-            rh._endpoints,
-            {},
-            "RouteHandler: _endpoints should be and empty dictionary",
         )
 
     def test_has__rules_Map_property(self):
@@ -89,90 +73,27 @@ class TestRouteHandler(TestCase):
             "RouteHandler: add is not callable",
         )
 
-    def test_route_handler_has_callable_prefix(self):
-        self.assertEqual(
-            hasattr(RouteHandler, "prefix"),
-            True,
-            "RouteHandler: no prefix attribute found",
-        )
-
-        prefix = make_sut().prefix
-        self.assertEqual(
-            hasattr(prefix, "__call__"),
-            True,
-            "RouteHandler: prefix is not callable",
-        )
-
     # CALLABLES ACCEPTS CORRECT NUMBER OF PARAMETERS
-    def test_add_receives_two_parameters(self):
+    def test_add_receives_one_parameter(self):
         add = make_sut().add
         self.assertEqual(
             add.__code__.co_argcount,
-            2 + 1,
-            "RouteHandler: add should accept three parameters"
-            "(including self)",
-        )
-
-    def test_prefix_receives_one_parameter(self):
-        prefix = make_sut().prefix
-        self.assertEqual(
-            prefix.__code__.co_argcount,
             1 + 1,
-            "RouteHandler: prefix should accept two parameters"
+            "RouteHandler: add should accept two parameters"
             "(including self)",
         )
 
     # CALLABLES SET PROPERTIES
-    def test_prefix_method_sets_prefix_property(self):
-        rh = make_sut()
-        rh.prefix("/api")
-        self.assertEqual(
-            rh._prefix,
-            "/api",
-            "RouteHandler: prefix method not setting _prefix",
-        )
-
-    def test_prefix_method_sets__prefix_property(self):
-        rh = make_sut()
-        rh.prefix("/api")
-        self.assertEqual(
-            rh._prefix,
-            "/api",
-            "RouteHandler: prefix method not setting _prefix",
-        )
-
-    def test_add_creates_correct_entry_in_endpoints(self):
-        rh = make_sut()
-        test_endpoint = make_endpoint()
-
-        self.assertEqual(len(rh._endpoints), 0)
-        rh.add("/", test_endpoint)
-        self.assertEqual(len(rh._endpoints), 1)
-        self.assertEqual(rh._endpoints["/"], test_endpoint)
-
     def test_add_creates_correct_entry_in_rules(self):
         rh = make_sut()
-        test_endpoint = make_endpoint()
 
         self.assertEqual(len(rh._rules._rules), 0)
-        rh.add("/<int:year>", test_endpoint)
+        rh.add("/<int:year>")
         self.assertEqual(len(rh._rules._rules), 1)
-        # import ipdb; ipdb.set_trace()
-
-    def test_add_route_adds_with_prefix(self):
-        rh = make_sut()
-        rh.add("/", make_endpoint())
-        self.assertIn("/", rh._endpoints.keys())
-
-        rh.prefix("/api")
-        rh.add("/users", make_endpoint())
-        self.assertIn("/api/users", rh._endpoints.keys())
 
     def test_parse_route_correctly_parses_route(self):
         rh = make_sut()
-        endpoint = make_endpoint()
-        rh.prefix("/api")
-        rh.add("/user/<int:id>", endpoint)
+        rh.add("/api/user/<int:id>")
 
         route, parameters = rh.parse("/api/user/43")
         self.assertEqual(route, "/api/user/<int:id>")

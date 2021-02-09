@@ -1,9 +1,14 @@
+from os import path
+
 from restful_serverless.endpoint import Endpoint
 from restful_serverless.route_handler import RouteHandler
 
 
 class RequestHandler:
     def __init__(self, route_handler):
+        self._endpoints = {}
+        self._prefix = ""
+
         if not isinstance(route_handler, RouteHandler):
             raise ValueError(
                 "route_handler: Invalid argument for route parameter, "
@@ -31,7 +36,12 @@ class RequestHandler:
                 "must be Endpoint"
             )
 
-        self._route_handler.add(route, handler)
+        if self._prefix and route.startswith("/"):
+            route = route[1:]
+
+        route_with_prefix = path.join(self._prefix, route)
+        self._endpoints[route_with_prefix] = handler
+        self._route_handler.add(route_with_prefix)
 
     def prefix_routes(self, prefix):
         if not isinstance(prefix, str):
@@ -40,4 +50,4 @@ class RequestHandler:
                 "must be string"
             )
 
-        self._route_handler.prefix(prefix)
+        self._prefix = prefix
